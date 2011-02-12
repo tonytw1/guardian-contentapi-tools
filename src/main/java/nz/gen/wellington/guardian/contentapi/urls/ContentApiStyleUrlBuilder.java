@@ -1,4 +1,4 @@
-package nz.gen.wellington.guardian.contentapi;
+package nz.gen.wellington.guardian.contentapi.urls;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
