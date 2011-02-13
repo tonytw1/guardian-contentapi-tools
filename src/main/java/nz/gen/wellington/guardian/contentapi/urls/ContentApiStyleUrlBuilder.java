@@ -163,7 +163,7 @@ public class ContentApiStyleUrlBuilder {
 		this.fromDate = date;
 	}
 
-	public void setToDate(String date) {
+	public void setToDate(String date) {	// TODO should take a Date, not a string
 		this.toDate = date;		
 	}
 	

@@ -17,7 +17,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 public class ContentApiStyleJSONParser {
 	
 	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
@@ -95,25 +94,25 @@ public class ContentApiStyleJSONParser {
 	
 	
 	
-	public List<Article> extractContentItems(JSONObject json) throws JSONException {
+	public List<Article> extractContentItems(JSONObject json, Map<String, Section> sections) throws JSONException {
 		JSONObject jsonResponse = json.getJSONObject("response");
 		JSONArray results = jsonResponse.getJSONArray("results");
 		
 		List<Article> articles = new ArrayList<Article>();
 		for (int i = 0; i < results.length(); i++) {
 			JSONObject content = results.getJSONObject(i);
-			articles.add(parseContentItem(content));
+			articles.add(parseContentItem(content, sections));
 		}
 		return articles;
 	}
 	
-	public Article extractContentItem(JSONObject json) throws JSONException {
+	public Article extractContentItem(JSONObject json, Map<String, Section> sections) throws JSONException {
 		JSONObject jsonResponse = json.getJSONObject("response");
 		JSONObject content = jsonResponse.getJSONObject("content");		
-		return parseContentItem(content);
+		return parseContentItem(content, sections);
 	}
 
-	private Article parseContentItem(JSONObject content) throws JSONException {
+	private Article parseContentItem(JSONObject content, Map<String, Section> sections) throws JSONException {
 		Article article = new Article();
 		article.setId(getJsonStringIfPresent(content, "id"));
 		article.setPubDate(parseDate(getJsonStringIfPresent(content, "webPublicationDate")));
@@ -132,6 +131,19 @@ public class ContentApiStyleJSONParser {
 		article.setDescription(getJsonStringIfPresent(fields, "body"));
 		article.setShortUrl(getJsonStringIfPresent(fields, "shortUrl"));
 		
+		if (content.has("tags")) {
+			JSONArray tags = content.getJSONArray("tags");
+			for (int i = 0; i < tags.length(); i++) {
+				JSONObject tag = tags.getJSONObject(i);				
+
+				Section tagSection = null;
+				if (tag.has("sectionId")) {
+					final String sectionId = tag.getString("sectionId");
+					tagSection = sections.get(sectionId);
+				}
+				article.addTag(new Tag(tag.getString("webTitle"), tag.getString("id"), tagSection, tag.getString("type")));
+			}
+		}
 		
 		return article;
 	}
