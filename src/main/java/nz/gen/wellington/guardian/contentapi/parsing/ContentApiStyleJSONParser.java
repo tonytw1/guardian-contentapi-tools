@@ -1,14 +1,12 @@
 package nz.gen.wellington.guardian.contentapi.parsing;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import nz.gen.wellington.guardian.contentapi.cleaning.HtmlCleaner;
+import nz.gen.wellington.guardian.contentapi.dates.ContentApiDateHelper;
 import nz.gen.wellington.guardian.model.Article;
 import nz.gen.wellington.guardian.model.Section;
 import nz.gen.wellington.guardian.model.Tag;
@@ -18,8 +16,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ContentApiStyleJSONParser {
-	
-	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
 	
 	private HtmlCleaner htmlCleaner;
 	
@@ -115,7 +111,7 @@ public class ContentApiStyleJSONParser {
 	private Article parseContentItem(JSONObject content, Map<String, Section> sections) throws JSONException {
 		Article article = new Article();
 		article.setId(getJsonStringIfPresent(content, "id"));
-		article.setPubDate(parseDate(getJsonStringIfPresent(content, "webPublicationDate")));
+		article.setPubDate(ContentApiDateHelper.parseDate(getJsonStringIfPresent(content, "webPublicationDate")));
 		article.setWebUrl(getJsonStringIfPresent(content, "webUrl"));
 		
 		Section section = new Section(
@@ -146,19 +142,6 @@ public class ContentApiStyleJSONParser {
 		}
 		
 		return article;
-	}
-	
-	private static Date parseDate(String dateString) {
-		 SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_TIME_FORMAT);
-		 if (dateString.endsWith("Z")) {
-			 dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-			 dateFormat.setTimeZone(java.util.TimeZone.getTimeZone("Zulu"));
-		 }		 
-		 try {
-			return dateFormat.parse(dateString);
-		} catch (ParseException e) {
-			 return null;
-		}		
 	}
 	
 	private String getJsonStringIfPresent(JSONObject json, String field) throws JSONException {
