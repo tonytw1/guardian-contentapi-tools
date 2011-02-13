@@ -4,7 +4,7 @@
   <artifactId>guardian-contentapi-tools</artifactId>
   <packaging>jar</packaging>
   <name>Guardian Content API tools</name>
-  <version>0.0.3</version>
+  <version>0.0.5</version>
   <build>
   	<plugins>
   		<plugin>
@@ -32,6 +32,20 @@
     	<artifactId>json</artifactId>
     	<version>20090211</version>
 	</dependency>	
+  	<dependency>
+  		<groupId>junit</groupId>
+  		<artifactId>junit</artifactId>
+  		<version>4.8.2</version>
+  		<type>jar</type>
+  		<scope>test</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>commons-lang</groupId>
+  		<artifactId>commons-lang</artifactId>
+  		<version>2.6</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
   </dependencies>
     
 </project>

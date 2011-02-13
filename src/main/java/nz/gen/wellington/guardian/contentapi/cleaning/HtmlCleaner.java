@@ -1,6 +1,7 @@
 package nz.gen.wellington.guardian.contentapi.cleaning;
 
 import java.util.regex.Pattern;
+import org.apache.commons.lang.StringEscapeUtils;
 
 public class HtmlCleaner {
 
@@ -17,13 +18,11 @@ public class HtmlCleaner {
 		content = h2end.matcher(content).replaceAll("\n\n");
 		content = p.matcher(content).replaceAll("\n\n");
 		content = br.matcher(content).replaceAll("\n");
+		content = content.replaceAll("\n{2,}", "\n\n");		
+
+		content = tags.matcher(content).replaceAll("");		
+		content = StringEscapeUtils.unescapeHtml(content);
 		
-		content  = tags.matcher(content).replaceAll("");
-		
-		content = content.replaceAll("&amp;", "&");
-		content = content.replaceAll("&nbsp;", " ");
-		
-		content = content.replaceAll("\n{2,}", "\n\n");
 		return content.trim();
 	}
 
