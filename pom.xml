@@ -4,7 +4,7 @@
   <artifactId>guardian-contentapi-tools</artifactId>
   <packaging>jar</packaging>
   <name>Guardian Content API tools</name>
-  <version>0.0.5</version>
+  <version>0.0.7</version>
   <build>
   	<plugins>
   		<plugin>

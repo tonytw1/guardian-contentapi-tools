@@ -89,6 +89,16 @@ public class ContentApiStyleJSONParser {
 	}
 	
 	
+	public int extractContentItemsCount(JSONObject json) throws JSONException {
+		if (isResponseOk(json)) {
+			JSONObject jsonResponse = json.getJSONObject("response");
+			if (jsonResponse.has("total")) {
+				return jsonResponse.getInt("total");
+			}
+		}
+		return 0;
+	}
+	
 	
 	public List<Article> extractContentItems(JSONObject json, Map<String, Section> sections) throws JSONException {
 		JSONObject jsonResponse = json.getJSONObject("response");
