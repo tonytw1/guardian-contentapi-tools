@@ -1,6 +1,7 @@
 package nz.gen.wellington.guardian.contentapi.parsing;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Map;
 import nz.gen.wellington.guardian.contentapi.cleaning.HtmlCleaner;
 import nz.gen.wellington.guardian.contentapi.dates.ContentApiDateHelper;
 import nz.gen.wellington.guardian.model.Article;
+import nz.gen.wellington.guardian.model.Refinement;
 import nz.gen.wellington.guardian.model.Section;
 import nz.gen.wellington.guardian.model.Tag;
 
@@ -117,7 +119,42 @@ public class ContentApiStyleJSONParser {
 		JSONObject content = jsonResponse.getJSONObject("content");		
 		return parseContentItem(content, sections);
 	}
+	
+	
+	public Map<String, List<Refinement>> parseRefinementGroups(JSONObject response) throws JSONException {
+		Map<String, List<Refinement>> refinements = new HashMap<String, List<Refinement>>();
+		JSONArray refinementGroups = response.getJSONArray("refinementGroups");
+		for (int i = 0; i < refinementGroups.length(); i++) {
+			JSONObject refinementGroup = refinementGroups.getJSONObject(i);
+			extractRefinement(refinements, refinementGroup);						
+		}
+		return refinements;
+	}
 
+	
+	private void extractRefinement(Map<String, List<Refinement>> refinements, JSONObject refinementGroup) throws JSONException {
+		String type = refinementGroup.getString("type");		
+		List<Refinement> tagRefinements = refinements.get(type);
+		if (tagRefinements == null) {
+			tagRefinements = new ArrayList<Refinement>();
+			refinements.put(type, tagRefinements);
+		}
+		
+		JSONArray refinementsJSON = refinementGroup.getJSONArray("refinements");
+		for (int j = 0; j < refinementsJSON.length(); j++) {
+			JSONObject refinement = refinementsJSON.getJSONObject(j);
+			tagRefinements.add(
+					new Refinement(type, 
+						refinement.getString("id"), 
+						refinement.getString("displayName"), 
+						refinement.getString("refinedUrl"),
+						refinement.getInt("count"))
+			);
+		}
+		return;
+	}
+	
+	
 	private Article parseContentItem(JSONObject content, Map<String, Section> sections) throws JSONException {
 		Article article = new Article();
 		article.setId(getJsonStringIfPresent(content, "id"));
