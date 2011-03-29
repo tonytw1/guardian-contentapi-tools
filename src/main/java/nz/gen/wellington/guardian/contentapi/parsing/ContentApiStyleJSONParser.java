@@ -160,19 +160,23 @@ public class ContentApiStyleJSONParser {
 		article.setId(getJsonStringIfPresent(content, "id"));
 		article.setPubDate(ContentApiDateHelper.parseDate(getJsonStringIfPresent(content, "webPublicationDate")));
 		article.setWebUrl(getJsonStringIfPresent(content, "webUrl"));
+
+		article.setHeadline(getJsonStringIfPresent(content, "webTitle"));
 		
 		Section section = new Section(
-				getJsonStringIfPresent(content, "sectionId"), 
-				getJsonStringIfPresent(content, "sectionName"));
+			getJsonStringIfPresent(content, "sectionId"), 
+			getJsonStringIfPresent(content, "sectionName"));
 		article.setSection(section);
 		
-		JSONObject fields = content.getJSONObject("fields");		
-		article.setHeadline(getJsonStringIfPresent(fields, "headline"));
-		article.setByline(getJsonStringIfPresent(fields, "byline"));		
-		article.setStandfirst(getJsonStringIfPresent(fields, "standfirst"));
-		article.setThumbnailUrl(getJsonStringIfPresent(fields, "thumbnail"));
-		article.setDescription(getJsonStringIfPresent(fields, "body"));
-		article.setShortUrl(getJsonStringIfPresent(fields, "shortUrl"));
+		if (content.has("fields")) {
+			JSONObject fields = content.getJSONObject("fields");		
+			article.setHeadline(getJsonStringIfPresent(fields, "headline"));
+			article.setByline(getJsonStringIfPresent(fields, "byline"));		
+			article.setStandfirst(getJsonStringIfPresent(fields, "standfirst"));
+			article.setThumbnailUrl(getJsonStringIfPresent(fields, "thumbnail"));
+			article.setDescription(getJsonStringIfPresent(fields, "body"));
+			article.setShortUrl(getJsonStringIfPresent(fields, "shortUrl"));
+		}
 		
 		if (content.has("tags")) {
 			JSONArray tags = content.getJSONArray("tags");
